@@ -19,13 +19,14 @@ import javax.swing.JOptionPane;
  *
  * @author CHATHURANGA
  */
-public class BookingPage extends javax.swing.JFrame {
+public class AddBookingPage extends javax.swing.JFrame {
 
     /**
      * Creates new form Booking
      */
-    public BookingPage() {
+    public AddBookingPage() {
         initComponents();
+        init();
     }
     
     private void init() {
@@ -103,7 +104,6 @@ public class BookingPage extends javax.swing.JFrame {
         nameLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         nameLabel.setText("Name");
 
-        pickupComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         pickupComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pickupComboBoxActionPerformed(evt);
@@ -112,8 +112,6 @@ public class BookingPage extends javax.swing.JFrame {
 
         destinationLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         destinationLabel.setText("Destination");
-
-        destinationComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         pickupLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         pickupLabel.setText("Pick Up ");
@@ -244,21 +242,23 @@ public class BookingPage extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBookingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new BookingPage().setVisible(true);
+                new AddBookingPage().setVisible(true);
             }
         });
     }
