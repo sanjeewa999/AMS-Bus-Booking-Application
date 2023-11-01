@@ -11,9 +11,18 @@ import com.busbooking.dao.BusStopDao;
 import com.busbooking.dao.BusStopDaoImplementation;
 import com.busbooking.model.Booking;
 import com.busbooking.model.BusStop;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 
 /**
  *
@@ -48,6 +57,34 @@ public class AddBookingPage extends javax.swing.JFrame {
         pickupComboBox.setSelectedIndex(0);
         destinationComboBox.setSelectedIndex(0);
         priceTextField.setText("");
+    }
+    
+    public boolean generatePDF(String name, String pickup, String destination, String noOfSeats, String ticketPrice){
+        Document document = new Document();
+        
+        try {
+            String fileName = "booking_ticket.pdf";
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            document.open();
+
+            // Add content to the PDF
+            document.add(new Paragraph("Booking Details"));
+            document.add(new Paragraph("Name: " + name));
+            document.add(new Paragraph("Pickup: " + pickup));
+            document.add(new Paragraph("Destination: " + destination));
+            document.add(new Paragraph("Number of Seats: " + noOfSeats));
+            document.add(new Paragraph("Price: $" + ticketPrice));
+
+            document.close();
+
+            // Show a confirmation message
+            JOptionPane.showMessageDialog(this, "The ticket has been saved as '["+ name + "] Booking Ticket.pdf'.");
+            return true;
+        } catch (DocumentException | FileNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error occurred while creating the ticket.");
+            return false;
+        }
     }
 
     /**
@@ -259,7 +296,8 @@ public class AddBookingPage extends javax.swing.JFrame {
         String pickup = (String)pickupComboBox.getSelectedItem();
         String destination = (String)destinationComboBox.getSelectedItem();
         String noOfSeatsSting = (String)noOfSeatsTextField.getText();
-        float ticketPrice = Float. parseFloat(priceTextField.getText());
+        String ticketPriceStr = priceTextField.getText();
+        float ticketPrice = Float. parseFloat(ticketPriceStr);
         
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Name cannot be empty!");
@@ -302,9 +340,15 @@ public class AddBookingPage extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        // Show a confirmation message
-        JOptionPane.showMessageDialog(this, "Booking added successfully!");
         clearFields();
+        int option = JOptionPane.showConfirmDialog(null, "Booking added successfully!\nDo you want to download the file?", "Download", JOptionPane.YES_NO_OPTION);
+            
+        if (option == JOptionPane.YES_OPTION) {
+            generatePDF(name, pickup, destination, noOfSeatsSting, ticketPriceStr);
+        } else {
+            // Cancel the download
+        }
+        
     }//GEN-LAST:event_bookButtonActionPerformed
 
     private void pickupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickupComboBoxActionPerformed
