@@ -14,8 +14,9 @@ import java.util.List;
  */
 public interface BookingDao {
     int add(Booking booking) throws SQLException;
-    void delete(int id) throws SQLException;
+    void deleteBooking(int id) throws SQLException;
     Booking getBooking(int id) throws SQLException;
     List<Booking> getBookings() throws SQLException;
-    void update(Booking booking) throws SQLException;
+    void updateBooking(Booking booking) throws SQLException;
+    float calculateTicketPrice(Booking booking) throws SQLException;
 }

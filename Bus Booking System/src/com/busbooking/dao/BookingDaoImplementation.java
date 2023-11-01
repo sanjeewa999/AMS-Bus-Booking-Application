@@ -22,17 +22,18 @@ public class BookingDaoImplementation implements BookingDao {
 
     @Override
     public int add(Booking booking) throws SQLException {
-        String query = "insert into Booking(name, pickup, destination, noOfSeats) values (?, ?, ?, ?)";
+        String query = "insert into Booking(name, pickup, destination, noOfSeats, price) values (?, ?, ?, ?, ?)";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, booking.getName());
         ps.setString(2, booking.getPickup());
         ps.setString(3, booking.getDestination());
         ps.setInt(4, booking.getNoOfSeats());
+        ps.setFloat(5, booking.getTicketPrice());
         return ps.executeUpdate();
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void deleteBooking(int id) throws SQLException {
         String query = "delete from Booking where id = ?";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setInt(1, id);
@@ -49,10 +50,12 @@ public class BookingDaoImplementation implements BookingDao {
             return null;
         }
         Booking booking = new Booking();
+        booking.setId(rs.getInt("id"));
         booking.setName(rs.getString("name"));
         booking.setPickup(rs.getString("pickup"));
         booking.setDestination(rs.getString("destination"));
         booking.setNoOfSeats(rs.getInt("noOfSeats"));
+        booking.setTicketPrice(rs.getFloat("price"));
         return booking;
     }
 
@@ -64,24 +67,41 @@ public class BookingDaoImplementation implements BookingDao {
         List<Booking> bookings = new ArrayList<>();
         while(rs.next()) {
             Booking booking = new Booking();
+            booking.setId(rs.getInt("id"));
             booking.setName(rs.getString("name"));
             booking.setPickup(rs.getString("pickup"));
             booking.setDestination(rs.getString("destination"));
             booking.setNoOfSeats(rs.getInt("noOfSeats"));
+            booking.setTicketPrice(rs.getFloat("price"));
             bookings.add(booking);
         }
         return bookings;
     }
 
     @Override
-    public void update(Booking booking) throws SQLException {
-        String query = "update Booking set name = ?, pickup = ?, destination = ?, noOfSeats = ? where id = ?";
+    public void updateBooking(Booking booking) throws SQLException {
+        String query = "update Booking set name = ?, pickup = ?, destination = ?, noOfSeats = ?, price = ? where id = ?";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, booking.getName());
         ps.setString(2, booking.getPickup());
         ps.setString(3, booking.getDestination());
         ps.setInt(4, booking.getNoOfSeats());
         ps.setInt(5, booking.getId());
+        ps.setFloat(6, booking.getTicketPrice());
         ps.executeUpdate();
+    }
+
+    @Override
+    public float calculateTicketPrice(Booking booking) throws SQLException {
+        String query = "SELECT price FROM Price WHERE start_city = ? AND end_city = ?";
+        PreparedStatement ps = con.prepareStatement(query);
+        ps.setString(1, booking.getPickup());
+        ps.setString(2, booking.getDestination());
+        ResultSet rs = ps.executeQuery();
+        if(!rs.next()) {
+            return -1;
+        }
+        float price = rs.getFloat("price");
+        return price * booking.getNoOfSeats();
     }
 }

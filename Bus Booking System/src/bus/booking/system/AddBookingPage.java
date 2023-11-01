@@ -14,6 +14,13 @@ import com.busbooking.model.BusStop;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 
 /**
  *
@@ -41,6 +48,42 @@ public class AddBookingPage extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void clearFields(){
+        nameTextField.setText("");
+        noOfSeatsTextField.setText("");
+        pickupComboBox.setSelectedIndex(0);
+        destinationComboBox.setSelectedIndex(0);
+        priceTextField.setText("");
+    }
+    
+    public boolean generatePDF(String name, String pickup, String destination, String noOfSeats, String ticketPrice){
+        Document document = new Document();
+        
+        try {
+            String fileName = "["+name+"] "+"booking_ticket.pdf";
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            document.open();
+
+            // Add content to the PDF
+            document.add(new Paragraph("Booking Details"));
+            document.add(new Paragraph("Name: " + name));
+            document.add(new Paragraph("Pickup: " + pickup));
+            document.add(new Paragraph("Destination: " + destination));
+            document.add(new Paragraph("Number of Seats: " + noOfSeats));
+            document.add(new Paragraph("Price: $" + ticketPrice));
+
+            document.close();
+
+            // Show a confirmation message
+            JOptionPane.showMessageDialog(this, "The ticket has been saved as '"+fileName+"'.");
+            return true;
+        } catch (DocumentException | FileNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error occurred while creating the ticket.");
+            return false;
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -65,6 +108,9 @@ public class AddBookingPage extends javax.swing.JFrame {
         pickupLabel = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        priceTextField = new javax.swing.JTextField();
+        noOfSeatsLabel1 = new javax.swing.JLabel();
+        calculatePriceButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -119,8 +165,29 @@ public class AddBookingPage extends javax.swing.JFrame {
         pickupLabel.setText("Pick Up ");
 
         jButton1.setText("← Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Download Ticket");
+
+        priceTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                priceTextFieldActionPerformed(evt);
+            }
+        });
+
+        noOfSeatsLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        noOfSeatsLabel1.setText("Price");
+
+        calculatePriceButton.setText("Calculate");
+        calculatePriceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculatePriceButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,17 +198,9 @@ public class AddBookingPage extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 320, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 314, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(destinationLabel)
-                                    .addComponent(noOfSeatsLabel))
-                                .addGap(38, 38, 38)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(destinationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(noOfSeatsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(nameLabel)
@@ -151,19 +210,33 @@ public class AddBookingPage extends javax.swing.JFrame {
                                     .addComponent(pickupComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(61, 61, 61)
-                                .addComponent(cancelButton)
-                                .addGap(35, 35, 35)
-                                .addComponent(bookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(336, 336, 336))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(destinationLabel)
+                                    .addComponent(noOfSeatsLabel)
+                                    .addComponent(noOfSeatsLabel1))
+                                .addGap(38, 38, 38)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(destinationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(noOfSeatsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(priceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(28, 28, 28)
+                                .addComponent(calculatePriceButton)))
+                        .addGap(243, 243, 243))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
-                        .addGap(470, 470, 470))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(470, 470, 470))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(cancelButton)
+                                .addGap(35, 35, 35)
+                                .addComponent(bookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(427, 427, 427))))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2)
-                .addGap(485, 485, 485))
+                .addGap(440, 440, 440))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,13 +263,18 @@ public class AddBookingPage extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(noOfSeatsLabel)
                     .addComponent(noOfSeatsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(noOfSeatsLabel1)
+                    .addComponent(priceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(calculatePriceButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(bookButton))
-                .addGap(47, 47, 47)
+                .addGap(43, 43, 43)
                 .addComponent(jButton2)
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addGap(28, 28, 28))
         );
 
         pack();
@@ -215,11 +293,44 @@ public class AddBookingPage extends javax.swing.JFrame {
         String name = nameTextField.getText();
         String pickup = (String)pickupComboBox.getSelectedItem();
         String destination = (String)destinationComboBox.getSelectedItem();
-        int noOfSeats = Integer.parseInt(noOfSeatsTextField.getText());
+        String noOfSeatsSting = (String)noOfSeatsTextField.getText();
+        String ticketPriceStr = priceTextField.getText();
+        float ticketPrice = Float. parseFloat(ticketPriceStr);
+        
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name cannot be empty!");
+            return;
+        }
+
+        // Check if the pickup field is empty
+        if (pickup.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pickup cannot be empty!");
+            return;
+        }
+
+        // Check if the destination field is empty
+        if (destination.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Destination cannot be empty!");
+            return;
+        }
+
+        // Check if the noOfSeats field is empty or not a number
+        if (noOfSeatsSting.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Number of seats cannot be empty!");
+            return;
+        }
+
+        int noOfSeats; 
+        try {
+            noOfSeats = Integer.parseInt(noOfSeatsSting);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Number of seats must be a number!");
+            return;
+        }
 
         // Create a Booking object and add it to the database
         // Use the BookingDao class (you need to implement it yourself)
-        Booking booking = new Booking(id, name, pickup, destination, noOfSeats);
+        Booking booking = new Booking(id, name, pickup, destination, noOfSeats, ticketPrice);
         BookingDao bookingDao = new BookingDaoImplementation();
         try {
             bookingDao.add(booking);
@@ -227,8 +338,15 @@ public class AddBookingPage extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        // Show a confirmation message
-        JOptionPane.showMessageDialog(this, "Booking added successfully!");
+        clearFields();
+        int option = JOptionPane.showConfirmDialog(null, "Booking added successfully!\nDo you want to download the file?", "Download", JOptionPane.YES_NO_OPTION);
+            
+        if (option == JOptionPane.YES_OPTION) {
+            generatePDF(name, pickup, destination, noOfSeatsSting, ticketPriceStr);
+        } else {
+            // Cancel the download
+        }
+        
     }//GEN-LAST:event_bookButtonActionPerformed
 
     private void pickupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickupComboBoxActionPerformed
@@ -236,11 +354,45 @@ public class AddBookingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_pickupComboBoxActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        nameTextField.setText("");
-        noOfSeatsTextField.setText("");
-        pickupComboBox.setSelectedIndex(0);
-        destinationComboBox.setSelectedIndex(0);
+        clearFields();
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Dashboard dashboard = new Dashboard();
+        dashboard.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void priceTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_priceTextFieldActionPerformed
+
+    private void calculatePriceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatePriceButtonActionPerformed
+        String name = nameTextField.getText();
+        String pickup = (String) pickupComboBox.getSelectedItem();
+        String destination = (String) destinationComboBox.getSelectedItem();
+        String noOfSeatsSting = (String) noOfSeatsTextField.getText();
+
+        int noOfSeats; 
+        try {
+            noOfSeats = Integer.parseInt(noOfSeatsSting);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Number of seats must be a number!");
+            return;
+        }
+
+        // Create a Booking object
+        Booking booking = new Booking(0, name, pickup, destination, noOfSeats);
+
+        // Use the BookingDaoImplementation class to calculate the ticket price
+        BookingDao bookingDao = new BookingDaoImplementation();
+        try {
+            float ticketPrice = bookingDao.calculateTicketPrice(booking);
+            priceTextField.setText(Float.toString(ticketPrice));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_calculatePriceButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -282,6 +434,7 @@ public class AddBookingPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bookButton;
+    private javax.swing.JButton calculatePriceButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JComboBox destinationComboBox;
     private javax.swing.JLabel destinationLabel;
@@ -292,8 +445,10 @@ public class AddBookingPage extends javax.swing.JFrame {
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JLabel noOfSeatsLabel;
+    private javax.swing.JLabel noOfSeatsLabel1;
     private javax.swing.JTextField noOfSeatsTextField;
     private javax.swing.JComboBox pickupComboBox;
     private javax.swing.JLabel pickupLabel;
+    private javax.swing.JTextField priceTextField;
     // End of variables declaration//GEN-END:variables
 }
