@@ -5,6 +5,13 @@
  */
 package bus.booking.system;
 
+import com.busbooking.dao.BookingDao;
+import com.busbooking.dao.BookingDaoImplementation;
+import com.busbooking.model.Booking;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author CHATHURANGA
@@ -16,7 +23,35 @@ public class ViewBookingPage extends javax.swing.JFrame {
      */
     public ViewBookingPage() {
         initComponents();
+        populateTable();
     }
+
+    private void populateTable() {
+        try {
+            // Use the BookingDaoImplementation class to get all bookings
+            BookingDao bookingDao = new BookingDaoImplementation();
+            List<Booking> bookings = bookingDao.getBookings();
+
+            // Create a new table model and add columns
+            DefaultTableModel dtm = new DefaultTableModel();
+            dtm.addColumn("ID");
+            dtm.addColumn("Name");
+            dtm.addColumn("Pickup");
+            dtm.addColumn("Destination");
+            dtm.addColumn("No. of Seats");
+
+            // Add rows to the table model
+            for (Booking booking : bookings) {
+                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats()});
+            }
+
+            // Set the table model of jTable1
+            jTable1.setModel(dtm);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,12 +65,12 @@ public class ViewBookingPage extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        searchTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        searchButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        backButtonBooking = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -48,7 +83,11 @@ public class ViewBookingPage extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         jLabel2.setText("Booking Id");
 
-        jTextField1.setText("jTextField1");
+        searchTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTextFieldActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -63,19 +102,24 @@ public class ViewBookingPage extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("Search");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Delete");
-
-        jButton3.setText("← Back");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
+        backButtonBooking.setText("← Back");
+        backButtonBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonBookingActionPerformed(evt);
             }
         });
 
@@ -92,14 +136,14 @@ public class ViewBookingPage extends javax.swing.JFrame {
                         .addGap(434, 434, 434)
                         .addComponent(jLabel2)
                         .addGap(32, 32, 32)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
+                        .addComponent(searchButton)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2))
+                        .addComponent(deleteButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton3)
+                        .addComponent(backButtonBooking)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)))
                 .addContainerGap(233, Short.MAX_VALUE))
@@ -117,30 +161,102 @@ public class ViewBookingPage extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(jButton3)))
+                        .addComponent(backButtonBooking)))
                 .addGap(46, 46, 46)
                 .addComponent(jLabel6)
-                .addGap(51, 51, 51)
+                .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchButton)
+                    .addComponent(deleteButton))
                 .addGap(48, 48, 48)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        try {
+            // Use the BookingDaoImplementation class to get the booking with the specified ID
+            BookingDao bookingDao = new BookingDaoImplementation();
+            Booking booking = bookingDao.getBooking(Integer.parseInt(searchTextField.getText()));
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+            // Create a new table model and add columns
+            DefaultTableModel dtm = new DefaultTableModel();
+            dtm.addColumn("ID");
+            dtm.addColumn("Name");
+            dtm.addColumn("Pickup");
+            dtm.addColumn("Destination");
+            dtm.addColumn("No. of Seats");
+
+            // Add a row to the table model
+            if (booking != null) {
+                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats()});
+            }
+
+            // Set the table model of jTable1
+            jTable1.setModel(dtm);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void backButtonBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonBookingActionPerformed
+        Dashboard dashboard = new Dashboard();
+        dashboard.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_backButtonBookingActionPerformed
+
+    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
+        try {
+            // Use the BookingDaoImplementation class to get the booking with the specified ID
+            BookingDao bookingDao = new BookingDaoImplementation();
+            Booking booking = bookingDao.getBooking(Integer.parseInt(searchTextField.getText()));
+
+            // Create a new table model and add columns
+            DefaultTableModel dtm = new DefaultTableModel();
+            dtm.addColumn("ID");
+            dtm.addColumn("Name");
+            dtm.addColumn("Pickup");
+            dtm.addColumn("Destination");
+            dtm.addColumn("No. of Seats");
+
+            // Add a row to the table model
+            if (booking != null) {
+                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats()});
+            }
+
+            // Set the table model of jTable1
+            jTable1.setModel(dtm);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_searchTextFieldActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        try {
+            // Get the selected row
+            int selectedRow = jTable1.getSelectedRow();
+
+            // Check if a row is actually selected
+            if (selectedRow != -1) {
+                // Get the booking ID of the selected row
+                int bookingId = (int) jTable1.getValueAt(selectedRow, 0);
+
+                // Use the BookingDaoImplementation class to delete the booking with the specified ID
+                BookingDao bookingDao = new BookingDaoImplementation();
+                bookingDao.deleteBooking(bookingId);
+
+                // Repopulate the table
+                populateTable();
+            }
+        } catch (SQLException e) {
+                e.printStackTrace();
+    }
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,14 +295,14 @@ public class ViewBookingPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton backButtonBooking;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchTextField;
     // End of variables declaration//GEN-END:variables
 }
