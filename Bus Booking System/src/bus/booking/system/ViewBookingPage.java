@@ -10,6 +10,7 @@ import com.busbooking.dao.BookingDaoImplementation;
 import com.busbooking.model.Booking;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -39,10 +40,11 @@ public class ViewBookingPage extends javax.swing.JFrame {
             dtm.addColumn("Pickup");
             dtm.addColumn("Destination");
             dtm.addColumn("No. of Seats");
+            dtm.addColumn("Price");
 
             // Add rows to the table model
             for (Booking booking : bookings) {
-                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats()});
+                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats(), booking.getTicketPrice()});
             }
 
             // Set the table model of jTable1
@@ -179,7 +181,13 @@ public class ViewBookingPage extends javax.swing.JFrame {
         try {
             // Use the BookingDaoImplementation class to get the booking with the specified ID
             BookingDao bookingDao = new BookingDaoImplementation();
-            Booking booking = bookingDao.getBooking(Integer.parseInt(searchTextField.getText()));
+            String searchID = searchTextField.getText();
+            if (searchID.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please Enter an ID to search!");
+                populateTable();
+                return;
+            }
+            Booking booking = bookingDao.getBooking(Integer.parseInt(searchID));
 
             // Create a new table model and add columns
             DefaultTableModel dtm = new DefaultTableModel();
@@ -188,10 +196,13 @@ public class ViewBookingPage extends javax.swing.JFrame {
             dtm.addColumn("Pickup");
             dtm.addColumn("Destination");
             dtm.addColumn("No. of Seats");
+            dtm.addColumn("Price");
 
-            // Add a row to the table model
             if (booking != null) {
-                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats()});
+                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats(), booking.getTicketPrice()});
+            } else {
+                JOptionPane.showMessageDialog(this, "No booking found with the specified ID!");
+                return;
             }
 
             // Set the table model of jTable1
@@ -208,29 +219,7 @@ public class ViewBookingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonBookingActionPerformed
 
     private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
-        try {
-            // Use the BookingDaoImplementation class to get the booking with the specified ID
-            BookingDao bookingDao = new BookingDaoImplementation();
-            Booking booking = bookingDao.getBooking(Integer.parseInt(searchTextField.getText()));
 
-            // Create a new table model and add columns
-            DefaultTableModel dtm = new DefaultTableModel();
-            dtm.addColumn("ID");
-            dtm.addColumn("Name");
-            dtm.addColumn("Pickup");
-            dtm.addColumn("Destination");
-            dtm.addColumn("No. of Seats");
-
-            // Add a row to the table model
-            if (booking != null) {
-                dtm.addRow(new Object[]{booking.getId(), booking.getName(), booking.getPickup(), booking.getDestination(), booking.getNoOfSeats()});
-            }
-
-            // Set the table model of jTable1
-            jTable1.setModel(dtm);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }//GEN-LAST:event_searchTextFieldActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
