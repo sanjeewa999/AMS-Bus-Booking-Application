@@ -61,7 +61,7 @@ public class AddBookingPage extends javax.swing.JFrame {
         Document document = new Document();
         
         try {
-            String fileName = "booking_ticket.pdf";
+            String fileName = "["+name+"] "+"booking_ticket.pdf";
             PdfWriter.getInstance(document, new FileOutputStream(fileName));
             document.open();
 
@@ -76,7 +76,7 @@ public class AddBookingPage extends javax.swing.JFrame {
             document.close();
 
             // Show a confirmation message
-            JOptionPane.showMessageDialog(this, "The ticket has been saved as '["+ name + "] Booking Ticket.pdf'.");
+            JOptionPane.showMessageDialog(this, "The ticket has been saved as '"+fileName+"'.");
             return true;
         } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
