@@ -32,7 +32,7 @@ public class BookingDaoImplementation implements BookingDao {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void deleteBooking(int id) throws SQLException {
         String query = "delete from Booking where id = ?";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setInt(1, id);
@@ -49,6 +49,7 @@ public class BookingDaoImplementation implements BookingDao {
             return null;
         }
         Booking booking = new Booking();
+        booking.setId(rs.getInt("id"));
         booking.setName(rs.getString("name"));
         booking.setPickup(rs.getString("pickup"));
         booking.setDestination(rs.getString("destination"));
@@ -64,6 +65,7 @@ public class BookingDaoImplementation implements BookingDao {
         List<Booking> bookings = new ArrayList<>();
         while(rs.next()) {
             Booking booking = new Booking();
+            booking.setId(rs.getInt("id"));
             booking.setName(rs.getString("name"));
             booking.setPickup(rs.getString("pickup"));
             booking.setDestination(rs.getString("destination"));
@@ -74,7 +76,7 @@ public class BookingDaoImplementation implements BookingDao {
     }
 
     @Override
-    public void update(Booking booking) throws SQLException {
+    public void updateBooking(Booking booking) throws SQLException {
         String query = "update Booking set name = ?, pickup = ?, destination = ?, noOfSeats = ? where id = ?";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, booking.getName());
