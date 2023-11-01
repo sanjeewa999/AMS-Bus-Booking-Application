@@ -119,6 +119,11 @@ public class AddBookingPage extends javax.swing.JFrame {
         pickupLabel.setText("Pick Up ");
 
         jButton1.setText("← Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("jButton2");
 
@@ -241,6 +246,12 @@ public class AddBookingPage extends javax.swing.JFrame {
         pickupComboBox.setSelectedIndex(0);
         destinationComboBox.setSelectedIndex(0);
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Dashboard dashboard = new Dashboard();
+        dashboard.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
