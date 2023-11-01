@@ -47,6 +47,7 @@ public class AddBookingPage extends javax.swing.JFrame {
         noOfSeatsTextField.setText("");
         pickupComboBox.setSelectedIndex(0);
         destinationComboBox.setSelectedIndex(0);
+        priceTextField.setText("");
     }
 
     /**
