@@ -14,6 +14,7 @@ public class Booking {
     private String pickup;
     private String destination;
     private int noOfSeats;
+    private float ticketPrice;
 
     public Booking() {
     }
@@ -24,6 +25,15 @@ public class Booking {
         this.pickup = pickup;
         this.destination = destination;
         this.noOfSeats = noOfSeats;
+    }
+
+    public Booking(int id, String name, String pickup, String destination, int noOfSeats, float ticketPrice) {
+        this.id = id;
+        this.name = name;
+        this.pickup = pickup;
+        this.destination = destination;
+        this.noOfSeats = noOfSeats;
+        this.ticketPrice = ticketPrice;
     }
 
     public String getName() {
@@ -64,6 +74,14 @@ public class Booking {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public float getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(float ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
     
 }
