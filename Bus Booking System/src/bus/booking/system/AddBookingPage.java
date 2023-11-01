@@ -41,6 +41,13 @@ public class AddBookingPage extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void clearFields(){
+        nameTextField.setText("");
+        noOfSeatsTextField.setText("");
+        pickupComboBox.setSelectedIndex(0);
+        destinationComboBox.setSelectedIndex(0);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -220,7 +227,38 @@ public class AddBookingPage extends javax.swing.JFrame {
         String name = nameTextField.getText();
         String pickup = (String)pickupComboBox.getSelectedItem();
         String destination = (String)destinationComboBox.getSelectedItem();
-        int noOfSeats = Integer.parseInt(noOfSeatsTextField.getText());
+        String noOfSeatsSting = (String)noOfSeatsTextField.getText();
+        
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name cannot be empty!");
+            return;
+        }
+
+        // Check if the pickup field is empty
+        if (pickup.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pickup cannot be empty!");
+            return;
+        }
+
+        // Check if the destination field is empty
+        if (destination.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Destination cannot be empty!");
+            return;
+        }
+
+        // Check if the noOfSeats field is empty or not a number
+        if (noOfSeatsSting.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Number of seats cannot be empty!");
+            return;
+        }
+
+        int noOfSeats; 
+        try {
+            noOfSeats = Integer.parseInt(noOfSeatsSting);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Number of seats must be a number!");
+            return;
+        }
 
         // Create a Booking object and add it to the database
         // Use the BookingDao class (you need to implement it yourself)
@@ -234,6 +272,7 @@ public class AddBookingPage extends javax.swing.JFrame {
 
         // Show a confirmation message
         JOptionPane.showMessageDialog(this, "Booking added successfully!");
+        clearFields();
     }//GEN-LAST:event_bookButtonActionPerformed
 
     private void pickupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickupComboBoxActionPerformed
@@ -241,10 +280,7 @@ public class AddBookingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_pickupComboBoxActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        nameTextField.setText("");
-        noOfSeatsTextField.setText("");
-        pickupComboBox.setSelectedIndex(0);
-        destinationComboBox.setSelectedIndex(0);
+        clearFields();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
