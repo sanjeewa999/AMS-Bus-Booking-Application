@@ -18,4 +18,5 @@ public interface BookingDao {
     Booking getBooking(int id) throws SQLException;
     List<Booking> getBookings() throws SQLException;
     void updateBooking(Booking booking) throws SQLException;
+    float calculateTicketPrice(Booking booking) throws SQLException;
 }
